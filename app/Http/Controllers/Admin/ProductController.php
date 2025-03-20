@@ -237,7 +237,6 @@ class ProductController extends Controller
         $update_data = Product::find($request->id);
         $input = $request->except(['image', 'product_type', 'files', 'sizes', 'colors', 'purchase_prices', 'old_prices', 'new_prices', 'stocks', 'images', 'up_id', 'up_sizes', 'up_colors', 'up_purchase_prices', 'up_old_prices', 'up_new_prices', 'up_stocks', 'up_images', 'pro_barcodes', 'up_pro_barcodes', 'proMaterial']);
 
-        $last_id = Product::orderBy('id', 'desc')->select('id')->first();
         $input['slug'] = strtolower(preg_replace('/[\/\s]+/', '-', $request->name . '-' . $update_data->id));
         $input['status'] = $request->status ? 1 : 0;
         $input['topsale'] = $request->topsale ? 1 : 0;

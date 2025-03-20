@@ -3708,6 +3708,7 @@ a.seller_shop {
 .description-items ul {
     display: flex;
     flex-wrap: wrap;
+    margin: 0;
 }
 
 .description-items ul li {

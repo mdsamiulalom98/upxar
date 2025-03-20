@@ -222,7 +222,7 @@
                                 <div class="form-group">
                                     <label for="pro_barcode" class="form-label">Product Barcode </label>
                                     <input type="text"
-                                        class="barcode form-control @error('stock') is-invalid @enderror"
+                                        class="barcode form-control @error('pro_barcode') is-invalid @enderror"
                                         name="pro_barcode" value="{{ old('pro_barcode') }}" id="pro_barcode">
                                     @error('pro_barcode[]')
                                         <span class="invalid-feedback" role="alert">
@@ -281,7 +281,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group mb-3">
                                             <label for="stock" class="form-label">Stock *</label>
-                                            <input type="text"
+                                            <input type="number"
                                                 class="nrequired form-control @error('stock') is-invalid @enderror"
                                                 name="stock" value="{{ old('stock') }}" id="stock" />
                                             @error('stock')
@@ -379,7 +379,7 @@
                                     <div class="col-sm-2">
                                         <div class="form-group">
                                             <label for="stocks" class="form-label">Stock *</label>
-                                            <input type="text" class="form-control" name="stocks[]">
+                                            <input type="number" class="form-control" name="stocks[]">
                                             @error('stocks')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -407,7 +407,7 @@
                                         <div class="form-group">
                                             <label for="pro_barcodes" class="form-label">Product Barcode </label>
                                             <input type="text"
-                                                class="form-control @error('stock') is-invalid @enderror"
+                                                class="form-control @error('pro_barcodes') is-invalid @enderror"
                                                 name="pro_barcodes[]" value="{{ old('pro_barcodes') }}"
                                                 id="pro_barcodes">
                                             @error('pro_barcodes[]')
@@ -509,8 +509,8 @@
                                         <div class="col-sm-2">
                                             <div class="form-group">
                                                 <label for="stocks" class="form-label">Stock *</label>
-                                                <input type="text"
-                                                    class="form-control @error('stock') is-invalid @enderror"
+                                                <input type="number"
+                                                    class="form-control @error('stocks') is-invalid @enderror"
                                                     name="stocks[]" value="{{ old('stocks') }}" id="stocks">
                                                 @error('stocks[]')
                                                     <span class="invalid-feedback" role="alert">
@@ -539,7 +539,7 @@
                                             <div class="form-group">
                                                 <label for="pro_barcodes" class="form-label">Product Barcode </label>
                                                 <input type="text"
-                                                    class="form-control @error('stock') is-invalid @enderror"
+                                                    class="form-control @error('pro_barcodes') is-invalid @enderror"
                                                     name="pro_barcodes[]" value="{{ old('pro_barcodes') }}"
                                                     id="pro_barcodes">
                                                 @error('pro_barcodes[]')
@@ -607,7 +607,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group mb-3">
                                     <label for="stock_alert" class="form-label">Stock Alert </label>
-                                    <input type="text" class="form-control @error('stock_alert') is-invalid @enderror"
+                                    <input type="number" class="form-control @error('stock_alert') is-invalid @enderror"
                                         name="stock_alert" value="{{ old('stock_alert') }}" id="stock_alert" />
                                     @error('stock_alert')
                                         <span class="invalid-feedback" role="alert">
@@ -617,12 +617,25 @@
                                 </div>
                             </div>
                             <!-- col end -->
-                            <div class="col-sm-8">
+                            <div class="col-sm-4">
                                 <div class="form-group mb-3">
                                     <label for="meta_title" class="form-label">Meta Title</label>
                                     <input type="text" class="form-control @error('meta_title') is-invalid @enderror"
                                         name="meta_title" value="{{ old('meta_title') }}" id="meta_title" />
                                     @error('meta_title')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-4">
+                                <div class="form-group mb-3">
+                                    <label for="additional_shipping" class="form-label">Additional Shipping</label>
+                                    <input type="text" class="form-control @error('additional_shipping') is-invalid @enderror"
+                                        name="additional_shipping" value="{{ old('additional_shipping') }}" id="additional_shipping" />
+                                    @error('additional_shipping')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

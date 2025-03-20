@@ -4,19 +4,21 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Productimage;
-use App\Models\Category;
-use App\Models\Subcategory;
-use App\Models\Childcategory;
-use App\Models\Brand;
-use App\Models\Color;
-use App\Models\ProductVariable;
-use App\Models\PurchaseDetails;
-use App\Models\Size;
-use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Brian2694\Toastr\Facades\Toastr;
+use App\Models\ProductVariable;
+use App\Models\PurchaseDetails;
+use App\Models\Productmaterial;
+use App\Models\Childcategory;
+use App\Models\Productimage;
+use App\Models\Subcategory;
+use App\Models\Material;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Size;
 
 class SellerProductController extends Controller
 {
@@ -65,7 +67,8 @@ class SellerProductController extends Controller
         $subcategories = Subcategory::where(['category_id' => $product->category_id ?? 0, 'status' => 1])->get();
         $childcategories = Childcategory::where(['subcategory_id' => $product->subcategory_id ?? 0, 'status' => 1])->get();
         $variables = ProductVariable::where('product_id', $product->id ?? 0)->get();
-        return view('frontEnd.layouts.seller.product_add', compact('products', 'categories', 'brands', 'colors', 'sizes', 'product', 'subcategories', 'childcategories', 'variables'));
+        $materials = Material::where('status', 1)->get();
+        return view('frontEnd.layouts.seller.product_add', compact('products', 'categories', 'brands', 'colors', 'sizes', 'product', 'subcategories', 'childcategories', 'variables', 'materials'));
     }
 
     public function store(Request $request)
@@ -79,46 +82,47 @@ class SellerProductController extends Controller
 
         $max_id = DB::table('products')->max('id');
         $max_id = $max_id ? $max_id + 1 : '1';
-        $input = $request->except(['image', 'product', 'product_type', 'files', 'sizes', 'colors', 'purchase_prices', 'old_prices', 'new_prices', 'stocks', 'images', 'pro_barcodes']);
+        $input = $request->except(['image', 'product', 'product_type', 'files', 'sizes', 'colors', 'purchase_prices', 'old_prices', 'new_prices', 'stocks', 'images', 'pro_barcodes', 'proMaterial']);
         $input['slug'] = strtolower(preg_replace('/[\/\s]+/', '-', $request->name . '-' . $max_id));
         $input['status'] = $request->status ? 1 : 0;
         $input['topsale'] = $request->topsale ? 1 : 0;
         $input['approval'] = 0;
         $input['seller_id'] = Auth::guard('seller')->user()->id;
-        $product_variables = ProductVariable::where('product_id', $product->id)->get();
-        if ($request->type == 0) {
-            $firstProductVariable = $product_variables->first();
+        // $product_variables = ProductVariable::where('product_id', $product->id)->get();
+        // if ($request->type == 0) {
+        //     $firstProductVariable = $product_variables->first();
 
-            $input['purchase_price'] = $request->purchase_prices[0] ?? ($firstProductVariable->purchase_price ?? null);
-            $input['old_price'] = $request->old_prices[0] ?? ($firstProductVariable->old_price ?? null);
-            $input['new_price'] = $request->new_prices[0] ?? ($firstProductVariable->new_price ?? null);
-            $input['stock']     = 0;
-        } else {
-            $input['pro_barcode'] = $request->pro_barcode ?? $this->barcode_generate();
-        }
+        //     $input['purchase_price'] = $request->purchase_prices[0] ?? ($firstProductVariable->purchase_price ?? null);
+        //     $input['old_price'] = $request->old_prices[0] ?? ($firstProductVariable->old_price ?? null);
+        //     $input['new_price'] = $request->new_prices[0] ?? ($firstProductVariable->new_price ?? null);
+        //     $input['stock']     = 0;
+        // } else {
+        //     $input['pro_barcode'] = $request->pro_barcode ?? $this->barcode_generate();
+        // }
         $save_data = Product::create($input);
+        $save_data->materials()->attach($request->proMaterial);
 
-        foreach ($product_variables as $key => $value) {
-            $variable = new ProductVariable();
-            $variable->product_id = $save_data->id;
-            $variable->size =  $value->size;
-            $variable->color = $value->color;
-            $variable->purchase_price = $value->purchase_price;
-            $variable->old_price = $value->old_price;
-            $variable->new_price = $value->new_price;
-            $variable->pro_barcode = $value->pro_barcode ?? $this->barcode_generate();
-            $variable->stock = $value->stock;
-            $variable->image = $value->image;
-            $variable->save();
-        }
+        // foreach ($product_variables as $key => $value) {
+        //     $variable = new ProductVariable();
+        //     $variable->product_id = $save_data->id;
+        //     $variable->size =  $value->size;
+        //     $variable->color = $value->color;
+        //     $variable->purchase_price = $value->purchase_price;
+        //     $variable->old_price = $value->old_price;
+        //     $variable->new_price = $value->new_price;
+        //     $variable->pro_barcode = $value->pro_barcode ?? $this->barcode_generate();
+        //     $variable->stock = $value->stock;
+        //     $variable->image = $value->image;
+        //     $variable->save();
+        // }
 
-        $product_images = Productimage::where('product_id', $product->id)->get();
-        foreach ($product_images as $key => $value) {
-            $product_image = new Productimage();
-            $product_image->product_id = $save_data->id;
-            $product_image->image = $value->image;
-            $product_image->save();
-        }
+        // $product_images = Productimage::where('product_id', $product->id)->get();
+        // foreach ($product_images as $key => $value) {
+        //     $product_image = new Productimage();
+        //     $product_image->product_id = $save_data->id;
+        //     $product_image->image = $value->image;
+        //     $product_image->save();
+        // }
 
         $pro_image = $request->file('image');
         if ($pro_image) {
@@ -195,7 +199,9 @@ class SellerProductController extends Controller
         $colors = Color::where('status', '1')->get();
         $sizes = Size::where('status', '1')->get();
         $variables = ProductVariable::where('product_id', $id)->get();
-        return view('frontEnd.layouts.seller.product_edit', compact('edit_data', 'categories', 'subcategory', 'childcategory', 'brands', 'sizes', 'colors', 'variables'));
+        $materials = Material::where('status', 1)->get();
+        $selectedmaterials = Productmaterial::where('product_id', $edit_data->id)->get();
+        return view('frontEnd.layouts.seller.product_edit', compact('edit_data', 'categories', 'subcategory', 'childcategory', 'brands', 'sizes', 'colors', 'variables', 'materials', 'selectedmaterials'));
     }
 
     public function update(Request $request)
@@ -207,7 +213,7 @@ class SellerProductController extends Controller
         ]);
 
         $update_data = Product::find($request->id);
-        $input = $request->except(['image', 'product_type', 'files', 'sizes', 'colors', 'purchase_prices', 'old_prices', 'new_prices', 'stocks', 'images', 'up_id', 'up_sizes', 'up_colors', 'up_purchase_prices', 'up_old_prices', 'up_new_prices', 'up_stocks', 'up_images', 'pro_barcodes', 'up_pro_barcodes']);
+        $input = $request->except(['image', 'product_type', 'files', 'sizes', 'colors', 'purchase_prices', 'old_prices', 'new_prices', 'stocks', 'images', 'up_id', 'up_sizes', 'up_colors', 'up_purchase_prices', 'up_old_prices', 'up_new_prices', 'up_stocks', 'up_images', 'pro_barcodes', 'up_pro_barcodes', 'proMaterial']);
 
 
         $last_id = Product::orderBy('id', 'desc')->select('id')->first();
@@ -215,6 +221,7 @@ class SellerProductController extends Controller
         $input['status'] = $request->status ? 1 : 0;
         $input['topsale'] = $request->topsale ? 1 : 0;
         $update_data->update($input);
+        $update_data->materials()->sync($request->proMaterial);
 
         $images = $request->file('image');
         if ($images) {
@@ -443,7 +450,7 @@ class SellerProductController extends Controller
         $max_barcode = max($max_product, $max_variable);
         return $max_barcode ? $max_barcode + 1 : 100001;
     }
-    
+
     public function price_edit()
     {
         $products = ProductVariable::select('id', 'product_id', 'size', 'color', 'purchase_price', 'old_price', 'new_price', 'stock')->get();

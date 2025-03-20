@@ -766,6 +766,40 @@
                                 </div>
                             </div>
                             <!-- col end -->
+                            <div class="col-sm-6 mb-3">
+                                <div class="form-group">
+                                    <label for="warranty_type" class="form-label">Warranty Type</label>
+                                    <input type="text" value="{{ $edit_data->warranty_type }}"
+                                        class="form-control @error('warranty_type') is-invalid @enderror"
+                                        name="warranty_type">
+                                    @error('warranty_type')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-6">
+                                <div class="form-group mb-3">
+                                    <label for="roles" class="form-label">Material (Optional)</label>
+                                    <select class="form-control select2" name="proMaterial[]" multiple="multiple">
+                                        <option value="">Select</option>
+                                        @foreach ($materials as $material)
+                                            <option value="{{ $material->id }}"
+                                                @foreach ($selectedmaterials as $selected) @if ($material->id == $selected->material_id) selected="selected" @endif @endforeach>
+                                                {{ $material->name }}</option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('sizes')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
 
                             <div class="col-sm-4">
                                 <div class="form-group mb-3">
@@ -780,12 +814,25 @@
                                 </div>
                             </div>
                             <!-- col end -->
-                            <div class="col-sm-8">
+                            <div class="col-sm-4">
                                 <div class="form-group mb-3">
                                     <label for="meta_title" class="form-label">Meta Title (SEO)</label>
                                     <input type="text" class="form-control @error('meta_title') is-invalid @enderror"
                                         name="meta_title" value="{{ $edit_data->meta_title }}" id="meta_title" />
                                     @error('meta_title')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-4">
+                                <div class="form-group mb-3">
+                                    <label for="additional_shipping" class="form-label">Additional Shipping</label>
+                                    <input type="text" class="form-control @error('additional_shipping') is-invalid @enderror"
+                                        name="additional_shipping" value="{{ $edit_data->additional_shipping }}" id="additional_shipping" />
+                                    @error('additional_shipping')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

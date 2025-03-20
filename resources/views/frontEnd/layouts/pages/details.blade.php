@@ -88,7 +88,8 @@
                                             </li>
                                             @if ($details->subcategory)
                                                 <li><span>/</span></li>
-                                                <li><a href="#">{{ $details->subcategory ? $details->subcategory->name : '' }}</a>
+                                                <li><a
+                                                        href="#">{{ $details->subcategory ? $details->subcategory->name : '' }}</a>
                                                 </li>
                                             @endif
                                             @if ($details->childcategory)
@@ -267,29 +268,37 @@
                                 aria-labelledby="description-tab" tabindex="0">
                                 <div class="description">
                                     <div class="description-items">
-                                        <ul>
-                                            @if($details->made_in)
-                                            <li>Made in: {{ $details->made_in }}</li>
-                                            @endif
-                                            @if($details->gender)
-                                            <li>Gender: {{ $details->gender }} </li>
-                                            @endif
-                                            @if ($details->materials->count() > 0)
-                                            <li>Product Material: @foreach ($details->materials as $key => $material) {{ $material->name }}@if(!$loop->last), @endif @endforeach </li>
-                                            @endif
-                                            @if($details->pack_size)
-                                            <li>Pack Size: {{ $details->pack_size }} </li>
-                                            @endif
-                                            @if($details->warranty_type)
-                                            <li>Warranty Type: {{ $details->warranty_type }} </li>
-                                            @endif
-                                            @if($details->weight)
-                                            <li>Weight: {{ $details->weight }}</li>
-                                            @endif
-                                            @if($details->additional_shipping)
-                                            <li>Additional Shipping: {{ $details->additional_shipping }}Tk</li>
-                                            @endif
-                                        </ul>
+                                        <div class="row">
+                                            <div class="col-sm-7">
+
+                                                <ul>
+                                                    @if ($details->made_in)
+                                                        <li>Made in: {{ $details->made_in }}</li>
+                                                    @endif
+                                                    @if ($details->gender)
+                                                        <li>Gender: {{ $details->gender }} </li>
+                                                    @endif
+                                                    @if ($details->materials->count() > 0)
+                                                        <li>Product Material: @foreach ($details->materials as $key => $material)
+                                                                {{ $material->name }}{{ !$loop->last ? ',' : '' }}
+                                                            @endforeach
+                                                        </li>
+                                                    @endif
+                                                    @if ($details->pack_size)
+                                                        <li>Pack Size: {{ $details->pack_size }} </li>
+                                                    @endif
+                                                    @if ($details->warranty_type)
+                                                        <li>Warranty Type: {{ $details->warranty_type }} </li>
+                                                    @endif
+                                                    @if ($details->weight)
+                                                        <li>Weight: {{ $details->weight }}</li>
+                                                    @endif
+                                                    @if ($details->additional_shipping)
+                                                        <li>Additional Shipping: {{ $details->additional_shipping }}Tk</li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                     {!! $details->description !!}
                                 </div>
